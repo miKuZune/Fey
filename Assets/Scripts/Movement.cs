@@ -14,11 +14,14 @@ public class Movement : MonoBehaviour {
 
 	void movement(){
 		float currentYVel = GetComponent<Rigidbody2D> ().velocity.y;
-		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+		if (Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.RightArrow)) {
 			GetComponent<Rigidbody2D> ().velocity = new Vector2 (moveSpeed, currentYVel);
-		}
-		else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
+			GetComponent<SpriteRenderer> ().flipX = true;
+		} else if (Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.LeftArrow)) {
 			GetComponent<Rigidbody2D> ().velocity = new Vector2 (-moveSpeed, currentYVel);
+			GetComponent<SpriteRenderer> ().flipX = false;
+		} else {
+			GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, currentYVel);
 		}
 
 		float currentXVel = GetComponent<Rigidbody2D> ().velocity.x;
