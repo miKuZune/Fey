@@ -10,6 +10,10 @@ public class Movement : MonoBehaviour {
 	}
 	public float moveSpeed;
 	public float jumpVel;
+	public float glideFallVel;
+
+
+	private float minusValue = 0.1f;
 	bool onFloor = false;
 
 	void movement(){
@@ -25,9 +29,22 @@ public class Movement : MonoBehaviour {
 		}
 
 		float currentXVel = GetComponent<Rigidbody2D> ().velocity.x;
-		if (Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown(KeyCode.Z)) {
-			if(onFloor)
-				GetComponent<Rigidbody2D> ().velocity = new Vector2 (currentXVel,jumpVel);
+		if (Input.GetKey (KeyCode.Space) || Input.GetKeyDown(KeyCode.Z)) {
+			if (onFloor) {
+				GetComponent<Rigidbody2D> ().velocity = new Vector2 (currentXVel, jumpVel);
+			}
+		}
+	}
+
+	void glide(){
+		float currentXVel = GetComponent<Rigidbody2D> ().velocity.x;
+		float currentYVel = GetComponent<Rigidbody2D> ().velocity.y;
+		if (Input.GetKey (KeyCode.LeftShift)) {
+			float tempVel = 0;
+			if (currentYVel > -glideFallVel) {
+				tempVel = currentYVel - minusValue;
+			}
+			GetComponent<Rigidbody2D> ().velocity = new Vector2 (currentXVel, tempVel);
 		}
 	}
 
@@ -35,11 +52,13 @@ public class Movement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		movement ();
+		glide ();
 
 
 	}
 	void OnTriggerEnter2D(Collider2D coll){
 		onFloor = true;
+		GetComponent<Rigidbody2D> ().gravityScale = 1;
 	}
 	void OnTriggerExit2D(Collider2D coll){
 		onFloor = false;
