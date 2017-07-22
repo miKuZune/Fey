@@ -11,10 +11,19 @@ public class Movement : MonoBehaviour {
 	public float moveSpeed;
 	public float jumpVel;
 	public float glideFallVel;
+	public GameObject lastCheckpoint = null;
 
-
+	public int health;
+	private int maxHealth = 1;
 	private float minusValue = 0.1f;
 	bool onFloor = false;
+
+	void checkForDeath(){
+		if (health <= 0) {
+			health = maxHealth;
+			gameObject.transform.position = lastCheckpoint.gameObject.transform.position;
+		}
+	}
 
 	void movement(){
 		float currentYVel = GetComponent<Rigidbody2D> ().velocity.y;
@@ -53,12 +62,15 @@ public class Movement : MonoBehaviour {
 	void Update () {
 		movement ();
 		glide ();
-
+		checkForDeath ();
 
 	}
 	void OnTriggerEnter2D(Collider2D coll){
 		onFloor = true;
 		GetComponent<Rigidbody2D> ().gravityScale = 1;
+	}
+	void OnTriggerStay2D(){
+		onFloor = true;
 	}
 	void OnTriggerExit2D(Collider2D coll){
 		onFloor = false;
