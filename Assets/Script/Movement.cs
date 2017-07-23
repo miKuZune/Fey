@@ -12,8 +12,9 @@ public class Movement : MonoBehaviour {
 	public float jumpVel;
 	public float glideFallVel;
 	public GameObject lastCheckpoint = null;
-
 	public int health;
+
+	private bool hasDoubleJumped = false;
 	private int maxHealth = 1;
 	private float minusValue = 0.1f;
 	bool onFloor = false;
@@ -38,9 +39,12 @@ public class Movement : MonoBehaviour {
 		}
 
 		float currentXVel = GetComponent<Rigidbody2D> ().velocity.x;
-		if (Input.GetKey (KeyCode.Space) || Input.GetKeyDown(KeyCode.Z)) {
+		if (Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown(KeyCode.Z)) {
 			if (onFloor) {
 				GetComponent<Rigidbody2D> ().velocity = new Vector2 (currentXVel, jumpVel);
+			} else if (hasDoubleJumped == false) {
+				GetComponent<Rigidbody2D> ().velocity = new Vector2 (currentXVel, jumpVel);
+				hasDoubleJumped = true;
 			}
 		}
 	}
@@ -67,10 +71,12 @@ public class Movement : MonoBehaviour {
 	}
 	void OnTriggerEnter2D(Collider2D coll){
 		onFloor = true;
+		hasDoubleJumped = false;
 		GetComponent<Rigidbody2D> ().gravityScale = 1;
 	}
 	void OnTriggerStay2D(){
 		onFloor = true;
+		hasDoubleJumped = false;
 	}
 	void OnTriggerExit2D(Collider2D coll){
 		onFloor = false;
